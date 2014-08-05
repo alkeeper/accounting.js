@@ -228,12 +228,14 @@
 	 *
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
+	 * roundexp - flag to show currency exponent on zero value:
+	 * 100.00 => 100 if true, 100.00 otherwise.
 	 */
-	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, roundexp) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal, roundexp);
 			});
 		}
 
@@ -245,7 +247,8 @@
 				(isObject(precision) ? precision : {
 					precision : precision,
 					thousand : thousand,
-					decimal : decimal
+					decimal : decimal,
+					roundexp : roundexp
 				}),
 				lib.settings.number
 			),
@@ -259,7 +262,8 @@
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		var decimal_view = toFixed(Math.abs(number), usePrecision).split('.')[1];
+		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? ( !roundexp || decimal_view != '00' ? opts.decimal + decimal_view : "" ) : "");
 	};
 
 

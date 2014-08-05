@@ -17,6 +17,10 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable
 
 ## Changelog
 
+**Fork differenses** — Cut trailing "zero exponent" opportunity added, even if precision > 0 
+* `accounting.formatNumber(100.00, 2, ",", ".", true)` will return `100`
+* `accounting.formatNumber(100.00, 2, ",", ".", false)` will return `100.00`
+
 **v0.4.1** - Alias `accounting.formatNumber()` as `accounting.format()`
 
 **v0.4** - Transferred repository to Open Exchange Rates for ongoing maintenance
